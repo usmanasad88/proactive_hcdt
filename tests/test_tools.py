@@ -248,15 +248,11 @@ class TestCommunicationTool:
 
         assert not result.success
 
-    def test_message_history(self, tool):
+    @pytest.mark.asyncio
+    async def test_message_history(self, tool):
         """Test message history tracking."""
-        import asyncio
-        asyncio.get_event_loop().run_until_complete(
-            tool.execute(message="First")
-        )
-        asyncio.get_event_loop().run_until_complete(
-            tool.execute(message="Second")
-        )
+        await tool.execute(message="First")
+        await tool.execute(message="Second")
 
         history = tool.get_message_history()
         assert len(history) == 2

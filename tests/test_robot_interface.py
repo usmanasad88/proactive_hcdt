@@ -155,30 +155,31 @@ class TestDummyRobotInterface:
         assert "movement" in caps
         assert "manipulation" in caps
 
-    def test_set_position(self, robot):
+    @pytest.mark.asyncio
+    async def test_set_position(self, robot):
         """Test directly setting position for testing."""
         robot.set_position({"x": 5.0, "y": 5.0, "z": 0.0})
 
-        import asyncio
-        state = asyncio.get_event_loop().run_until_complete(robot.get_state())
+        state = await robot.get_state()
         assert state.position["x"] == 5.0
 
-    def test_set_battery_level(self, robot):
+    @pytest.mark.asyncio
+    async def test_set_battery_level(self, robot):
         """Test setting battery level."""
         robot.set_battery_level(0.5)
 
-        import asyncio
-        state = asyncio.get_event_loop().run_until_complete(robot.get_state())
+        state = await robot.get_state()
         assert state.battery_level == 0.5
 
-    def test_trigger_and_clear_error(self, robot):
+    @pytest.mark.asyncio
+    async def test_trigger_and_clear_error(self, robot):
         """Test triggering and clearing error state."""
         robot.trigger_error("Test error")
 
-        import asyncio
-        state = asyncio.get_event_loop().run_until_complete(robot.get_state())
+        state = await robot.get_state()
         assert state.error_state == "Test error"
 
         robot.clear_error()
-        state = asyncio.get_event_loop().run_until_complete(robot.get_state())
+        state = await robot.get_state()
+        assert state.error_state is None
         assert state.error_state is None

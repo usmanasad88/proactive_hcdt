@@ -203,24 +203,20 @@ class TestAIController:
         assert response is not None
         # The dummy provider should have triggered a tool call for "move"
 
-    def test_conversation_history(self, controller):
+    @pytest.mark.asyncio
+    async def test_conversation_history(self, controller):
         """Test conversation history is maintained."""
-        import asyncio
-        asyncio.get_event_loop().run_until_complete(
-            controller.process("First message")
-        )
+        await controller.process("First message")
 
         history = controller.get_conversation_history()
 
         # Should have system + user + assistant messages
         assert len(history) >= 3
 
-    def test_clear_history(self, controller):
+    @pytest.mark.asyncio
+    async def test_clear_history(self, controller):
         """Test clearing conversation history."""
-        import asyncio
-        asyncio.get_event_loop().run_until_complete(
-            controller.process("Test message")
-        )
+        await controller.process("Test message")
 
         controller.clear_history()
         history = controller.get_conversation_history()
